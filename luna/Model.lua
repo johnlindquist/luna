@@ -8,7 +8,7 @@ return function()
 
   function public:setCurrentTime(value)
     currentTime = value
-    self:send("timeChange", currentTime)
+    self:dispatchEvent({name = "timeChange", data = currentTime})
   end
 
   local someTable = {}
@@ -23,7 +23,7 @@ return function()
   function public:init(startingTime)
     self:setCurrentTime(startingTime)
     --example of a "table listener"
-    self:receive("scoreTap", someTable) --If you don't include the second param, it will default to "self"
+    self:addEventListener("scoreTap", someTable) --If you don't include the second param, it will default to "self"
     timer.performWithDelay(1000, self, 0)
   end
 

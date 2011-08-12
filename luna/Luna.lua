@@ -2,23 +2,21 @@ local receivers = {}
 local messenger = {}
 
 -- TODO: implement an optional logging system to show history
-messenger.send = function(sender, messageName, payload)
-  print("sending: ", messageName, payload, sender)
+messenger.dispatchEvent = function(self, event)
+    print("dispatchEvent: ", event.name, event.data, event.target)
 
-  if receivers[messageName] == nil then return end
-  for i in ipairs(receivers[messageName]) do
-    local listener = receivers[messageName][i]
+  if receivers[event.name] == nil then return end
+  for i in ipairs(receivers[event.name]) do
+    local listener = receivers[event.name][i]
     if type(listener) == "table" then
-      listener[messageName](receivers[messageName][i], { data = payload, target = sender, name = messageName })
+      listener[event.name](receivers[event.name][i], event)
     else
-      listener({ data = payload, target = sender, name = messageName })
+      listener(event)
     end
   end
 end
 
-messenger.isReceiving = function(self, messageName, listener)
-  print("isReceiving: ", self, messageName, listener)
-
+messenger.hasEventListener = function(self, messageName, listener)
   for i in ipairs(receivers[messageName]) do
     if receivers[messageName][i] == listener then
       return true, i
@@ -27,12 +25,12 @@ messenger.isReceiving = function(self, messageName, listener)
   return false
 end
 
-messenger.receive = function(self, messageName, listener)
-  print("receive: ", listener, messageName)
+messenger.addEventListener = function(self, messageName, listener)
+  print("addEventListener: ", messageName, listener)
 
   if listener == nil then listener = self end
   receivers[messageName] = receivers[messageName] or {}
-  local bool, i = self:isReceiving(messageName, listener)
+  local bool, i = self:hasEventListener(messageName, listener)
   if bool then
     print("already receiving " .. messageName)
   else
@@ -40,9 +38,9 @@ messenger.receive = function(self, messageName, listener)
   end
 end
 
-messenger.stopReceive = function(self, messageName, listener)
+messenger.removeEventListener = function(self, messageName, listener)
   print("\nstopReceive: ", messageName, listener)
-  local bool, i = self:isReceiving(messageName, listener)
+  local bool, i = self:hasEventListener(messageName, listener)
   if bool then table.remove(receivers[messageName], i) end
 end
 

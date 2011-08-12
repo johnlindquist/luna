@@ -9,12 +9,12 @@ return function()
 
   function public:tap(event)
     --send a "tap" to anyone listening by receive("tap")
-    self:send("scoreTap", 0)
+    self:dispatchEvent({name = "scoreTap", data = 0})
 
-    if self:isReceiving("timeChange", onTimeChanged) then
-      self:stopReceive("timeChange", onTimeChanged)
+    if self:hasEventListener("timeChange", onTimeChanged) then
+      self:removeEventListener("timeChange", onTimeChanged)
     else
-      self:receive("timeChange", onTimeChanged)
+      self:addEventListener("timeChange", onTimeChanged)
     end
   end
 
@@ -26,7 +26,7 @@ return function()
     self.scoreDisplay = scoreDisplay --make accessible
 
     --example of a "function listener"
-    self:receive("timeChange", onTimeChanged)
+    self:addEventListener("timeChange", onTimeChanged)
   end
 
   return public

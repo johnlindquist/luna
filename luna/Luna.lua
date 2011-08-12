@@ -3,7 +3,7 @@ local messenger = {}
 
 -- TODO: implement an optional logging system to show history
 messenger.dispatchEvent = function(self, event)
-    print("dispatchEvent: ", event.name, event.data, event.target)
+    print("dispatchEvent: ", "name = ", event.name, "data = ", event.data, "target = ", event.target)
 
   if receivers[event.name] == nil then return end
   for i in ipairs(receivers[event.name]) do

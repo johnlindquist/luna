@@ -24,7 +24,6 @@ return function()
 
   --init is called automatically
   function public:init()
-    print("init")
     scoreDisplay = display.newText("Woo haa!", 0, 0, native.systemFont, 16)
 
     scoreDisplay:setTextColor(255, 255, 255)

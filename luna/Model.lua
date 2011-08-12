@@ -11,8 +11,9 @@ return function()
     self:send("timeChange", currentTime)
   end
 
-  function public:tap(payload, sender)
-    self:setCurrentTime(payload)
+  local someTable = {}
+  function someTable:tap(payload, sender)
+    public:setCurrentTime(payload)
   end
 
   function public:timer()
@@ -22,7 +23,7 @@ return function()
   function public:init(startingTime)
     self:setCurrentTime(startingTime)
     --example of a "table listener"
-    self:receive("tap", self)
+    self:receive("tap", someTable) --If you don't include the second param, it will default to "self"
     timer.performWithDelay(1000, self, 0)
   end
 

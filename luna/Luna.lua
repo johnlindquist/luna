@@ -30,6 +30,7 @@ end
 messenger.receive = function(self, messageName, listener)
   print("receive: ", listener, messageName)
 
+  if listener == nil then listener = self end
   receivers[messageName] = receivers[messageName] or {}
   local bool, i = self:isReceiving(messageName, listener)
   if bool then

@@ -2,6 +2,10 @@ return function()
   local public = {}
 
   local scoreDisplay
+  function public:getScoreDisplay()
+    return scoreDisplay
+  end
+
 
   local function onTimeChanged(event)
     scoreDisplay.text = event.data
@@ -9,7 +13,7 @@ return function()
 
   function public:tap(event)
     --send a "tap" to anyone listening by receive("tap")
-    self:dispatchEvent({name = "scoreTap", data = 0})
+    self:dispatchEvent({ name = "scoreTap", data = 0 })
 
     if self:hasEventListener("timeChange", onTimeChanged) then
       self:removeEventListener("timeChange", onTimeChanged)
@@ -20,10 +24,11 @@ return function()
 
   --init is called automatically
   function public:init()
-    scoreDisplay = display.newText("", 0, 0, native.systemFont, 16)
+    print("init")
+    scoreDisplay = display.newText("Woo haa!", 0, 0, native.systemFont, 16)
+
     scoreDisplay:setTextColor(255, 255, 255)
     scoreDisplay:addEventListener("tap", self)
-    self.scoreDisplay = scoreDisplay --make accessible
 
     --example of a "function listener"
     self:addEventListener("timeChange", onTimeChanged)

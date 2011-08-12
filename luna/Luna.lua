@@ -3,7 +3,8 @@ local messenger = {}
 
 -- TODO: implement an optional logging system to show history
 messenger.send = function(sender, messageName, payload)
---  print("sending: ", messageName, payload, sender)
+  print("sending: ", messageName, payload, sender)
+
   for i in ipairs(receivers[messageName]) do
     local listener = receivers[messageName][i]
     if type(listener) == "table" then
@@ -16,8 +17,8 @@ end
 
 messenger.isReceiving = function(self, messageName, listener)
   print("isReceiving: ", self, messageName, listener)
+
   for i in ipairs(receivers[messageName]) do
-    print("receivers[messageName]: ", receivers[messageName])
     if receivers[messageName][i] == listener then
       return true, i
     end

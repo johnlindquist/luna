@@ -12,8 +12,8 @@ return function()
   end
 
   local someTable = {}
-  function someTable:scoreTap(payload, sender)
-    public:setCurrentTime(payload)
+  function someTable:scoreTap(event)
+    public:setCurrentTime(event.data)
   end
 
   function public:timer()

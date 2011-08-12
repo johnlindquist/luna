@@ -3,8 +3,8 @@ return function()
 
   local scoreDisplay
 
-  local function onTimeChanged(payload, sender)
-    scoreDisplay.text = payload
+  local function onTimeChanged(event)
+    scoreDisplay.text = event.data
   end
 
   function public:tap(event)

@@ -9,9 +9,9 @@ messenger.send = function(sender, messageName, payload)
   for i in ipairs(receivers[messageName]) do
     local listener = receivers[messageName][i]
     if type(listener) == "table" then
-      listener[messageName](receivers[messageName][i], payload, sender)
+      listener[messageName](receivers[messageName][i], { data = payload, target = sender, name = messageName })
     else
-      listener(payload, sender)
+      listener({ data = payload, target = sender, name = messageName })
     end
   end
 end

@@ -3,24 +3,12 @@ return function()
 
   local scoreDisplay
 
-
   local function onTimeChanged(payload, sender)
     scoreDisplay.text = payload
   end
 
---  init is called automatically
-  function public:init()
-    scoreDisplay = display.newText(0, 0, 0, native.systemFont, 16)
-    scoreDisplay:setTextColor(255, 255, 255)
-    scoreDisplay:addEventListener("tap", self)
-    self.scoreDisplay = scoreDisplay --make accessible
-
---    example of a "function listener"
-    self:receive("timeChange", onTimeChanged)
-  end
-
   function public:tap(event)
---    send a "tap" to anyone listening by receive("tap")
+    --    send a "tap" to anyone listening by receive("tap")
     self:send("tap", 0)
 
     if self:isReceiving("timeChange", onTimeChanged) then
@@ -30,6 +18,16 @@ return function()
     end
   end
 
+  --  init is called automatically
+  function public:init()
+    scoreDisplay = display.newText(0, 0, 0, native.systemFont, 16)
+    scoreDisplay:setTextColor(255, 255, 255)
+    scoreDisplay:addEventListener("tap", self)
+    self.scoreDisplay = scoreDisplay --make accessible
+
+    --    example of a "function listener"
+    self:receive("timeChange", onTimeChanged)
+  end
 
   return public
 end

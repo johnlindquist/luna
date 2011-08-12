@@ -9,7 +9,7 @@ return function()
 
   function public:tap(event)
     --send a "tap" to anyone listening by receive("tap")
-    self:send("tap", 0)
+    self:send("scoreTap", 0)
 
     if self:isReceiving("timeChange", onTimeChanged) then
       self:stopReceive("timeChange", onTimeChanged)

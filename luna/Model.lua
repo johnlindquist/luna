@@ -12,7 +12,7 @@ return function()
   end
 
   local someTable = {}
-  function someTable:tap(payload, sender)
+  function someTable:scoreTap(payload, sender)
     public:setCurrentTime(payload)
   end
 
@@ -23,7 +23,7 @@ return function()
   function public:init(startingTime)
     self:setCurrentTime(startingTime)
     --example of a "table listener"
-    self:receive("tap", someTable) --If you don't include the second param, it will default to "self"
+    self:receive("scoreTap", someTable) --If you don't include the second param, it will default to "self"
     timer.performWithDelay(1000, self, 0)
   end
 

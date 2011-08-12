@@ -5,6 +5,7 @@ local messenger = {}
 messenger.send = function(sender, messageName, payload)
   print("sending: ", messageName, payload, sender)
 
+  if receivers[messageName] == nil then return end
   for i in ipairs(receivers[messageName]) do
     local listener = receivers[messageName][i]
     if type(listener) == "table" then
@@ -39,7 +40,7 @@ messenger.receive = function(self, messageName, listener)
 end
 
 messenger.stopReceive = function(self, messageName, listener)
-  print("stopReceive: ", messageName, listener)
+  print("\nstopReceive: ", messageName, listener)
   local bool, i = self:isReceiving(messageName, listener)
   if bool then table.remove(receivers[messageName], i) end
 end
@@ -49,7 +50,6 @@ local mt = { __index = messenger }
 luna = function(path)
   return function(...)
     local actor = require(path)()
-    actor.__index = actor
     setmetatable(actor, mt)
     actor:init(unpack(arg))
     return actor

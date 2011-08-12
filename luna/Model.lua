@@ -1,7 +1,7 @@
 return function()
   local public = {}
 
-  local currentTime = 0
+  local currentTime
   function public:getCurrentTime()
     return currentTime
   end
@@ -19,8 +19,9 @@ return function()
     self:setCurrentTime(currentTime + 1)
   end
 
-  function public:init()
-    --    example of a "table listener"
+  function public:init(startingTime)
+    self:setCurrentTime(startingTime)
+    --example of a "table listener"
     self:receive("tap", self)
     timer.performWithDelay(1000, self, 0)
   end

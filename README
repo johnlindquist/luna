@@ -1,1 +1,12 @@
-This file was created by IntelliJ IDEA (Xena) IU-107.509 for binding GitHub repository
+Luna features:
+1. Use addEventListener/removeEventListener to any table for easy communication between tables
+2. Create your own eventDispatchers to group together table events or use the global lunaEventDispatcher
+3. Use the global "luna(myTable)" syntax sugar for decorating tables
+5. Simply use the same global "luna("MyModule")" syntax sugar for creating and decorating modules
+4. Stop all events on an eventDispatcher by using removeAllEventListeners and addAllRemovedEventListeners
+5. Easily customize events: {name = "myEvent", data="myData", target=self}
+6. Act on the table that sent the event using event.sender or customize using event.target
+7. Write less by using myTable:addEventListener("foo") which defaults to function myTable:foo(event)
+8. Debug all your events by setting lunaDebug = true
+
+*More Examples Coming Soon*

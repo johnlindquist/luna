@@ -7,18 +7,34 @@ return function()
   end
 
 
+  --  This is invoked if you use     self:addEventListener("timeChange")
   local function onTimeChanged(event)
     scoreDisplay.text = event.data
   end
 
-  function o:tap(event)
-    --send a "tap" to anyone listening by receive("tap")
-    self:dispatchEvent({ name = "scoreTap", data = 0 })
+  --[[
+  Because "self" and "o" are the same in the "init" function,
+  "o:timeChange" is invoked if you use one of these options:
+    self:addEventListener("timeChange") --defaults to "self"
+    self:addEventListener("timeChange", self)
+    o:addEventListener("timeChange")
+    o:addEventListener("timeChange", o)
+    self:addEventListener("timeChange", o)
+    o:addEventListener("timeChange", self)
+  ]]
 
-    if self:hasEventListener("timeChange", onTimeChanged) then
-      self:removeEventListener("timeChange", onTimeChanged)
+  function o:timeChange(event)
+    scoreDisplay.text = event.data
+  end
+
+  function o:tap(event)
+    --send a "scoreTap" to anyone listening by receive("scoreTap")
+    o:dispatchEvent({ name = "scoreTap", data = 0 })
+
+    if o:hasEventListener("timeChange", onTimeChanged) then
+      o:removeEventListener("timeChange", onTimeChanged)
     else
-      self:addEventListener("timeChange", onTimeChanged)
+      o:addEventListener("timeChange", onTimeChanged)
     end
   end
 
@@ -27,10 +43,10 @@ return function()
     scoreDisplay = display.newText("Woo haa!", 0, 0, native.systemFont, 16)
 
     scoreDisplay:setTextColor(255, 255, 255)
-    scoreDisplay:addEventListener("tap", self)
+    scoreDisplay:addEventListener("tap", o)
 
     --example of a "function listener"
-    self:addEventListener("timeChange", onTimeChanged)
+    o:addEventListener("timeChange", onTimeChanged)
   end
 
   return o

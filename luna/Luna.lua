@@ -27,7 +27,7 @@ local function createMessenger()
   end
 
   messenger.addEventListener = function(self, messageName, listener)
---    print("addEventListener: ", messageName, listener)
+    print("addEventListener: ", messageName, listener)
 
     if listener == nil then listener = self end
     receivers[messageName] = receivers[messageName] or {}

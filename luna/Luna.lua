@@ -4,7 +4,7 @@ local function createMessenger()
 
   -- TODO: implement an optional logging system to show history
   messenger.dispatchEvent = function(self, event)
---    print("dispatchEvent: ", "name = ", event.name, "data = ", event.data, "target = ", event.target)
+  --    print("dispatchEvent: ", "name = ", event.name, "data = ", event.data, "target = ", event.target)
 
     if receivers[event.name] == nil then return end
     for i in ipairs(receivers[event.name]) do
@@ -29,7 +29,7 @@ local function createMessenger()
   end
 
   messenger.addEventListener = function(self, messageName, listener)
-    print("addEventListener: ", messageName, listener)
+--    print("addEventListener: ", messageName, listener)
 
     listener = listener or self
     receivers[messageName] = receivers[messageName] or {}
@@ -42,7 +42,7 @@ local function createMessenger()
   end
 
   messenger.removeEventListener = function(self, messageName, listener)
---    print("\nstopReceive: ", messageName, listener)
+  --    print("\nstopReceive: ", messageName, listener)
     listener = listener or self
     local bool, i = self:hasEventListener(messageName, listener)
     if bool then table.remove(receivers[messageName], i) end
@@ -51,19 +51,46 @@ local function createMessenger()
   return messenger
 end
 
-local mt = { __index = createMessenger() }
+
+local lunaContext = {}
+lunaContext.messenger = {}
+local function extend(destination, source)
+  for k, v in pairs(source) do
+    destination[k] = v
+  end
+
+  return destination
+end
+
+extend(lunaContext.messenger, createMessenger())
 
 luna = function(path, context)
   if context == nil then
-    context = mt
+    context = lunaContext
+  elseif context.messenger == nil then
+    context.messenger = {}
+    extend(context.messenger, createMessenger())
+  end
+  local actor
+  if type(path) == "table" then
+    actor = path
   else
-    if context.messenger == nil then context.messenger = createMessenger() end
-    context.__index = context.messenger
+    actor = require(path)
+    if type(actor) == "function" then
+      actor = actor()
+    end
   end
-  return function(...)
-    local actor = require(path)()
-    setmetatable(actor, context)
-    actor:init(unpack(arg))
-    return actor
-  end
+
+  setmetatable(actor, {
+    __call = function(...)
+      if actor.init then
+        actor.init(unpack(arg))
+      end
+      return actor
+    end
+  })
+
+  extend(actor, context.messenger)
+
+  return actor
 end

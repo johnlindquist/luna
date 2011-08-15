@@ -6,6 +6,7 @@ EventDispatcher = function()
   local removedReceivers = {}
 
   o.dispatchEvent = function(self, event)
+    event.sender = self
     if lunaDebug then
       print("dispatchEvent: ", "name = ", event.name, "data = ", event.data, "target = ", event.target)
     end

@@ -1,31 +1,31 @@
 return function()
-  local public = {}
+  local o = {}
 
   local currentTime
-  function public:getCurrentTime()
+  function o:getCurrentTime()
     return currentTime
   end
 
-  function public:setCurrentTime(value)
+  function o:setCurrentTime(value)
     currentTime = value
     self:dispatchEvent({name = "timeChange", data = currentTime})
   end
 
   local someTable = {}
   function someTable:scoreTap(event)
-    public:setCurrentTime(event.data)
+    o:setCurrentTime(event.data)
   end
 
-  function public:timer()
+  function o:timer()
     self:setCurrentTime(currentTime + 1)
   end
 
-  function public:init(startingTime)
+  function o:init(startingTime)
     self:setCurrentTime(startingTime)
     --example of a "table listener"
     self:addEventListener("scoreTap", someTable) --If you don't include the second param, it will default to "self"
     timer.performWithDelay(1000, self, 0)
   end
 
-  return public
+  return o
 end

@@ -1,8 +1,8 @@
 return function()
-  local public = {}
+  local o = {}
 
   local scoreDisplay
-  function public:getScoreDisplay()
+  function o:getScoreDisplay()
     return scoreDisplay
   end
 
@@ -11,7 +11,7 @@ return function()
     scoreDisplay.text = event.data
   end
 
-  function public:tap(event)
+  function o:tap(event)
     --send a "tap" to anyone listening by receive("tap")
     self:dispatchEvent({ name = "scoreTap", data = 0 })
 
@@ -23,7 +23,7 @@ return function()
   end
 
   --init is called automatically
-  function public:init()
+  function o:init()
     scoreDisplay = display.newText("Woo haa!", 0, 0, native.systemFont, 16)
 
     scoreDisplay:setTextColor(255, 255, 255)
@@ -33,5 +33,5 @@ return function()
     self:addEventListener("timeChange", onTimeChanged)
   end
 
-  return public
+  return o
 end

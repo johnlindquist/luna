@@ -18,6 +18,8 @@ local function createMessenger()
   end
 
   messenger.hasEventListener = function(self, messageName, listener)
+    listener = listener or self
+
     for i in ipairs(receivers[messageName]) do
       if receivers[messageName][i] == listener then
         return true, i
@@ -29,7 +31,7 @@ local function createMessenger()
   messenger.addEventListener = function(self, messageName, listener)
     print("addEventListener: ", messageName, listener)
 
-    if listener == nil then listener = self end
+    listener = listener or self
     receivers[messageName] = receivers[messageName] or {}
     local bool, i = self:hasEventListener(messageName, listener)
     if bool then
@@ -41,6 +43,7 @@ local function createMessenger()
 
   messenger.removeEventListener = function(self, messageName, listener)
 --    print("\nstopReceive: ", messageName, listener)
+    listener = listener or self
     local bool, i = self:hasEventListener(messageName, listener)
     if bool then table.remove(receivers[messageName], i) end
   end

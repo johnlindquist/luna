@@ -1,11 +1,10 @@
-return function()
+View = function()
   -- I named this "o" because it's really short and I use it everywhere in this module
   -- This is only a personal preference, you can name it whatever you want
-
   local o = {}
 
   local scoreDisplay
-  scoreDisplay = display.newText("Not initialized", 0, 0, native.systemFont, 16)
+  scoreDisplay = display.newText("Not initialized", 0, 0, native.systemFont, 20)
   scoreDisplay:setTextColor(255, 255, 255)
 
   function o:getScoreDisplay()
@@ -32,16 +31,15 @@ return function()
     o:addEventListener("timeChange", o)
     self:addEventListener("timeChange", o)
     o:addEventListener("timeChange", self)
-
-
   ]]
 
-  function o:tap(event)
+  local function onTap(event)
     --send a "scoreTap" to anyone listening by receive("scoreTap")
     o:dispatchEvent({ name = "scoreTap", data = 0 })
 
     if o:hasEventListener("timeChange", onTimeChanged) then
       o:removeEventListener("timeChange", onTimeChanged)
+      scoreDisplay.text = "Stopped"
     else
       o:addEventListener("timeChange", onTimeChanged)
     end
@@ -54,7 +52,7 @@ return function()
   function o:init(text)
     scoreDisplay.text = text
     --This is a Corona display listener, NOT a luna listener!
-    scoreDisplay:addEventListener("tap", o)
+    scoreDisplay:addEventListener("tap", onTap)
 
     --example of a "function listener"
     o:addEventListener("timeChange", onTimeChanged)
@@ -62,3 +60,4 @@ return function()
 
   return o
 end
+return View

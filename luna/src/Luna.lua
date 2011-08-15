@@ -1,10 +1,14 @@
-local function createMessenger()
-  local receivers = {}
-  local messenger = {}
+lunaDebug = false
 
-  -- TODO: implement an optional logging system to show history
-  messenger.dispatchEvent = function(self, event)
-  --    print("dispatchEvent: ", "name = ", event.name, "data = ", event.data, "target = ", event.target)
+EventDispatcher = function()
+  local o = {}
+  local receivers = {}
+  local removedReceivers = {}
+
+  o.dispatchEvent = function(self, event)
+    if lunaDebug then
+      print("dispatchEvent: ", "name = ", event.name, "data = ", event.data, "target = ", event.target)
+    end
 
     if receivers[event.name] == nil then return end
     for i in ipairs(receivers[event.name]) do
@@ -17,9 +21,10 @@ local function createMessenger()
     end
   end
 
-  messenger.hasEventListener = function(self, messageName, listener)
+  o.hasEventListener = function(self, messageName, listener)
     listener = listener or self
 
+    if receivers[messageName] == nil then return false end
     for i in ipairs(receivers[messageName]) do
       if receivers[messageName][i] == listener then
         return true, i
@@ -28,8 +33,10 @@ local function createMessenger()
     return false
   end
 
-  messenger.addEventListener = function(self, messageName, listener)
---    print("addEventListener: ", messageName, listener)
+  o.addEventListener = function(self, messageName, listener)
+    if lunaDebug then
+      print("addEventListener: ", messageName, listener)
+    end
 
     listener = listener or self
     receivers[messageName] = receivers[messageName] or {}
@@ -41,19 +48,34 @@ local function createMessenger()
     end
   end
 
-  messenger.removeEventListener = function(self, messageName, listener)
-  --    print("\nstopReceive: ", messageName, listener)
+  o.removeEventListener = function(self, messageName, listener)
+    if lunaDebug then
+      print("\nremoveEventListener: ", messageName, listener)
+    end
+
     listener = listener or self
     local bool, i = self:hasEventListener(messageName, listener)
     if bool then table.remove(receivers[messageName], i) end
   end
 
-  return messenger
+  o.removeAllEventListeners = function(self)
+    for k, v in pairs(receivers) do
+      removedReceivers[k] = receivers[k]
+      receivers[k] = nil
+    end
+  end
+
+  o.addAllRemovedEventListeners = function(self)
+    for k, v in pairs(removedReceivers) do
+      receivers[k] = removedReceivers[k]
+      removedReceivers[k] = nil
+    end
+
+  end
+
+  return o
 end
 
-
-local lunaContext = {}
-lunaContext.messenger = {}
 local function extend(destination, source)
   for k, v in pairs(source) do
     destination[k] = v
@@ -62,14 +84,13 @@ local function extend(destination, source)
   return destination
 end
 
-extend(lunaContext.messenger, createMessenger())
+lunaEventDispatcher = EventDispatcher()
 
-luna = function(path, context)
-  if context == nil then
-    context = lunaContext
-  elseif context.messenger == nil then
-    context.messenger = {}
-    extend(context.messenger, createMessenger())
+luna = function(path, eventDispatcher)
+  if eventDispatcher == nil then
+    eventDispatcher = lunaEventDispatcher
+  elseif eventDispatcher == nil then
+    eventDispatcher = EventDispatcher()
   end
   local actor
   if type(path) == "table" then
@@ -90,7 +111,7 @@ luna = function(path, context)
     end
   })
 
-  extend(actor, context.messenger)
+  extend(actor, eventDispatcher)
 
   return actor
 end
